@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.androidwithkotlin.R
+import com.example.androidwithkotlin.databinding.MainFragmentBinding
 import com.example.androidwithkotlin.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
@@ -18,14 +17,22 @@ class MainFragment : Fragment() {
     }
 
     private lateinit var viewModel: MainViewModel
+    private var _binding: MainFragmentBinding? = null
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        _binding = MainFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
@@ -33,12 +40,13 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val observer = Observer<Any> { renderData(it) }
+        val observer = Observer<String> { renderData(it) }
         viewModel.getData().observe(viewLifecycleOwner, observer)
+        binding.button.setOnClickListener { viewModel.requestData(binding.editText.text.toString()) }
     }
 
-    private fun renderData(data: Any?) {
-        Toast.makeText(context, "data", Toast.LENGTH_SHORT).show()
+    private fun renderData(data: String) {
+        binding.message.text = data
     }
 
 }
