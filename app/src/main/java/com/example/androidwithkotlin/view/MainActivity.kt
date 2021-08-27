@@ -1,9 +1,7 @@
 package com.example.androidwithkotlin.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import com.example.androidwithkotlin.R
+import androidx.appcompat.app.AppCompatActivity
 import com.example.androidwithkotlin.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
