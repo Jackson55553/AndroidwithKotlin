@@ -25,6 +25,7 @@ class MainViewModel(private val repository: Repository = RepositoryImpl()) : Vie
             counter++
             liveDataToObserve.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
         }.start()
+
     }
 
     fun getWeatherFromRemoteSource() {
