@@ -19,13 +19,13 @@ class MainViewModel(private val repository: Repository = RepositoryImpl()) : Vie
     }
 
     fun getWeatherFromLocalSource() {
-            liveDataToObserve.value = AppState.Loading
-            Thread {
-                sleep(1000)
-                counter++
-                liveDataToObserve.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
-            }.start()
-        }
+        liveDataToObserve.value = AppState.Loading
+        Thread {
+            sleep(1000)
+            counter++
+            liveDataToObserve.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
+        }.start()
+    }
 
     fun getWeatherFromRemoteSource() {
         liveDataToObserve.value = AppState.Loading
@@ -35,4 +35,4 @@ class MainViewModel(private val repository: Repository = RepositoryImpl()) : Vie
             liveDataToObserve.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
         }.start()
     }
-    }
+}
