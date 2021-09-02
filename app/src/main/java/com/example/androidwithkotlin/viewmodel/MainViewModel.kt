@@ -12,10 +12,7 @@ class MainViewModel(private val repository: Repository = RepositoryImpl()) : Vie
 
     private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
 
-
-    fun getData(): LiveData<AppState> {
-        return liveDataToObserve
-    }
+    fun getData(): LiveData<AppState> = liveDataToObserve
 
     fun getWeatherFromLocalSourceRus() = getDataFromLocalSource(isRussia = true)
 
@@ -25,10 +22,12 @@ class MainViewModel(private val repository: Repository = RepositoryImpl()) : Vie
         liveDataToObserve.value = AppState.Loading
         Thread {
             sleep(3000)
-            liveDataToObserve.postValue(AppState.Success(
-                if (isRussia) repository.getWeatherFromLocalStorageRus()
-                else repository.getWeatherFromLocalStorageWorld()
-            ))
+            liveDataToObserve.postValue(
+                AppState.Success(
+                    if (isRussia) repository.getWeatherFromLocalStorageRus()
+                    else repository.getWeatherFromLocalStorageWorld()
+                )
+            )
         }.start()
 
     }
