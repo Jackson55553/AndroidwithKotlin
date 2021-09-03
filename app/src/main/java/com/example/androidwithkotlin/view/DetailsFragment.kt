@@ -8,8 +8,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import com.example.androidwithkotlin.BuildConfig
 import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.data.Weather
 import com.example.androidwithkotlin.databinding.DetailsFragmentBinding
@@ -22,7 +24,6 @@ import java.net.URL
 import java.util.stream.Collectors
 import javax.net.ssl.HttpsURLConnection
 
-private const val YOUR_API_KEY = "a1fd333f-cb33-4374-a8be-9ef6285815fd"
 
 class DetailsFragment : Fragment() {
 
@@ -45,50 +46,20 @@ class DetailsFragment : Fragment() {
         weatherBundle = arguments?.getParcelable<Weather>(BUNDLE_EXTRA) ?: Weather()
         binding.mainView.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
-        loadWeather()
+        val loader = WeatherLoader(onLoadListener, weatherBundle.city.lat, weatherBundle.city.lon )
+        loader.loadWeather()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun loadWeather() {
-        try {
-            val uri =
-                URL("https://api.weather.yandex.ru/v2/informers?lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
-            val handler = Looper.myLooper()?.let { Handler(it) }
-            Thread {
-                lateinit var urlConnection: HttpsURLConnection
-                try {
-                    urlConnection = uri.openConnection() as HttpsURLConnection
-                    urlConnection.requestMethod = "GET"
-                    urlConnection.addRequestProperty(
-                        "X-Yandex-API-Key",
-                        YOUR_API_KEY
-                    )
-                    urlConnection.readTimeout = 10000
-                    val bufferedReader =
-                        BufferedReader(InputStreamReader(urlConnection.inputStream))
+    private val onLoadListener= object : WeatherLoader.WeatherLoaderListener{
+        override fun onLoaded(weatherDTO: WeatherDTO) {
+            displayWeather(weatherDTO)
+        }
 
-                    val weatherDTO: WeatherDTO =
-                        Gson().fromJson(getLines(bufferedReader), WeatherDTO::class.java)
-                    handler?.post { displayWeather(weatherDTO) }
-                } catch (e: Exception) {
-                    Log.e("", "Fail connection", e)
-                    e.printStackTrace()
-                } finally {
-                    urlConnection.disconnect()
-                }
-            }.start()
-        } catch (e: MalformedURLException) {
-            Log.e("", "Fail URI", e)
-            e.printStackTrace()
+        override fun onFailed(throwable: Throwable) {
+            Toast.makeText(context, "FAIL", Toast.LENGTH_SHORT).show()
         }
 
     }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun getLines(reader: BufferedReader): String {
-        return reader.lines().collect(Collectors.joining("\n"))
-    }
-
     private fun displayWeather(weatherDTO: WeatherDTO) {
         with(binding) {
             mainView.visibility = View.VISIBLE
