@@ -18,12 +18,12 @@ import javax.net.ssl.HttpsURLConnection
 private const val YOUR_API_KEY = BuildConfig.WEATHER_API_KEY
 
 class WeatherLoader(
-    private val listener:WeatherLoaderListener,
-    private val lat : Double,
+    private val listener: WeatherLoaderListener,
+    private val lat: Double,
     private val lon: Double
 ) {
 
-    interface WeatherLoaderListener{
+    interface WeatherLoaderListener {
         fun onLoaded(weatherDTO: WeatherDTO)
         fun onFailed(throwable: Throwable)
     }

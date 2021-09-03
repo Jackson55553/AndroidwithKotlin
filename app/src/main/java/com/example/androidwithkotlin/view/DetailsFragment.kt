@@ -46,11 +46,11 @@ class DetailsFragment : Fragment() {
         weatherBundle = arguments?.getParcelable<Weather>(BUNDLE_EXTRA) ?: Weather()
         binding.mainView.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
-        val loader = WeatherLoader(onLoadListener, weatherBundle.city.lat, weatherBundle.city.lon )
+        val loader = WeatherLoader(onLoadListener, weatherBundle.city.lat, weatherBundle.city.lon)
         loader.loadWeather()
     }
 
-    private val onLoadListener= object : WeatherLoader.WeatherLoaderListener{
+    private val onLoadListener = object : WeatherLoader.WeatherLoaderListener {
         override fun onLoaded(weatherDTO: WeatherDTO) {
             displayWeather(weatherDTO)
         }
@@ -60,6 +60,7 @@ class DetailsFragment : Fragment() {
         }
 
     }
+
     private fun displayWeather(weatherDTO: WeatherDTO) {
         with(binding) {
             mainView.visibility = View.VISIBLE
