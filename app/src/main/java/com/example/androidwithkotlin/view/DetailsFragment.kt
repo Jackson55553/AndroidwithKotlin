@@ -57,7 +57,6 @@ class DetailsFragment : Fragment() {
         val client = OkHttpClient()
         val builder = Request.Builder()
         builder.header(REQUEST_API_KEY, BuildConfig.WEATHER_API_KEY)
-
         builder.url("https://api.weather.yandex.ru/v2/informers?lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
         val request = builder.build()
         val call: Call = client.newCall(request)
