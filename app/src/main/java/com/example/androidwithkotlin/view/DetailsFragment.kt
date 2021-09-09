@@ -16,6 +16,7 @@ import com.example.androidwithkotlin.dto.WeatherDTO
 import com.example.androidwithkotlin.ui.model.AppState
 import okhttp3.*
 import com.example.androidwithkotlin.viewmodel.DetailsViewModel
+import com.squareup.picasso.Picasso
 
 private const val TEMP_INVALID = -100
 private const val FEELS_LIKE_INVALID = -100
@@ -87,6 +88,10 @@ class DetailsFragment : Fragment() {
                 feelsLikeValue.text = it.feelsLike.toString()
                 weatherCondition.text = it.condition
             }
+            Picasso
+                .get()
+                .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                .into(headerIcon)
         }
     }
 
