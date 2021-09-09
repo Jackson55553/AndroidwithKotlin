@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.androidwithkotlin.R
+import com.example.androidwithkotlin.data.City
 import com.example.androidwithkotlin.data.Weather
 import com.example.androidwithkotlin.databinding.DetailsFragmentBinding
 import com.example.androidwithkotlin.dto.WeatherDTO
@@ -18,18 +19,12 @@ import okhttp3.*
 import com.example.androidwithkotlin.viewmodel.DetailsViewModel
 import com.squareup.picasso.Picasso
 
-private const val TEMP_INVALID = -100
-private const val FEELS_LIKE_INVALID = -100
-private const val PROCESS_ERROR = "Обработка ошибки"
-private const val REQUEST_API_KEY = "X-Yandex-API-Key"
-
 class DetailsFragment : Fragment() {
     private var _binding: DetailsFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
-    private val viewModel: DetailsViewModel by lazy {
-        ViewModelProvider(this).get(DetailsViewModel::class.java)
-    }
+
+    private val viewModel: DetailsViewModel by lazy { ViewModelProvider(this).get(DetailsViewModel::class.java) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +45,10 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         weatherBundle = arguments?.getParcelable<Weather>(BUNDLE_EXTRA) ?: Weather()
         viewModel.detailsLiveData.observe(viewLifecycleOwner) { renderData(it) }
-        viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat, weatherBundle.city.lon)
+        viewModel.getWeatherFromRemoteSource(
+            weatherBundle.city.lat,
+            weatherBundle.city.lon
+        )
     }
 
     private fun renderData(appState: AppState) {
@@ -82,6 +80,7 @@ class DetailsFragment : Fragment() {
                     city.lat.toString(),
                     city.lon.toString()
                 )
+                saveCity(city, weather)
             }
             weather.let {
                 temperatureValue.text = it.temperature.toString()
@@ -93,6 +92,17 @@ class DetailsFragment : Fragment() {
                 .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
                 .into(headerIcon)
         }
+    }
+
+    private fun saveCity(city: City, weather: Weather) {
+        viewModel.saveCityToDB(
+            Weather(
+                city,
+                weather.temperature,
+                weather.feelsLike,
+                weather.condition
+            )
+        )
     }
 
     companion object {
