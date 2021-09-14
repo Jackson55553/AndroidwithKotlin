@@ -3,4 +3,7 @@
     <string name="feels_like_label">ощущается</string>
     <string name="temperature_label">температура</string>
     <string name="city_coordinates">lt/ln: 55.755826, 37.617299900000035</string>
+    <string name="error">Ошибка</string>
+    <string name="reload">Перегрузить</string>
+    <string name="menu_title_history">История</string>
 </resources>
